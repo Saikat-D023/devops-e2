@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: mern-app
+  labels:
+    app: backend
+spec:
+  replicas: 2  # Two pods for availability (can set to 1 for local testing)
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: YOUR_DOCKERHUB_USERNAME/backend:latest
+          imagePullPolicy: Always  # Ensures K8s pulls the latest image each deploy
+          ports:
+            - containerPort: 5000
+          env:
+            - name: PORT
+              value: "5000"
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mern-secrets
+                  key: MONGO_URI
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: mern-secrets
+                  key: NODE_ENV
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          readinessProbe:  # Container ready for traffic
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:  # Restart if health fails
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      restartPolicy: Always

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mern-config
+  namespace: mern-app
+data:
+  LOG_LEVEL: "info"
+  CLIENT_PORT: "3000"

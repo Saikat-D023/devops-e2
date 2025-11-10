@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: mern-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: YOUR_DOCKERHUB_USERNAME/frontend:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: VITE_API_URL
+              value: "http://backend.mern-app.svc.cluster.local:5000"
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
