@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: backend
-          image: YOUR_DOCKERHUB_USERNAME/backend:latest
-          imagePullPolicy: Always  # Ensures K8s pulls the latest image each deploy
+          image: devops-backend:latest
+          imagePullPolicy: IfNotPresent 
           ports:
             - containerPort: 5000
           env:
